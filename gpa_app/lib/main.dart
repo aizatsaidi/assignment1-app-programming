@@ -7,7 +7,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -27,12 +26,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // INPUT CONTROLLER
+
+  // INPUT
   TextEditingController marksController = TextEditingController();
 
-  // OUTPUT VARIABLES
-  double gpa = 0.0;
-  String status = "";
+  // OUTPUT
+  String grade = "";
+  double gradePoint = 0.0;
+  String remarks = "";
 
   @override
   void dispose() {
@@ -40,34 +41,78 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
+  // LOGIC
   void calculateGPA() {
     double marks = double.tryParse(marksController.text) ?? 0;
 
     setState(() {
-      if (marks >= 80) {
-        gpa = 4.0;
-        status = "Excellent";
+      if (marks > 100 || marks < 0) {
+        grade = "-";
+        gradePoint = 0.0;
+        remarks = "Invalid Input";
+      } else if (marks >= 90) {
+        grade = "A+";
+        gradePoint = 4.00;
+        remarks = "Excellent";
+      } else if (marks >= 80) {
+        grade = "A";
+        gradePoint = 4.00;
+        remarks = "Excellent";
+      } else if (marks >= 75) {
+        grade = "A-";
+        gradePoint = 3.67;
+        remarks = "Good";
+      } else if (marks >= 70) {
+        grade = "B+";
+        gradePoint = 3.33;
+        remarks = "Good";
       } else if (marks >= 65) {
-        gpa = 3.0;
-        status = "Good";
+        grade = "B";
+        gradePoint = 3.00;
+        remarks = "Good";
+      } else if (marks >= 60) {
+        grade = "B-";
+        gradePoint = 2.67;
+        remarks = "Satisfactory";
+      } else if (marks >= 55) {
+        grade = "C+";
+        gradePoint = 2.33;
+        remarks = "Satisfactory";
       } else if (marks >= 50) {
-        gpa = 2.0;
-        status = "Pass";
+        grade = "C";
+        gradePoint = 2.00;
+        remarks = "Pass";
+      } else if (marks >= 45) {
+        grade = "C-";
+        gradePoint = 1.67;
+        remarks = "Fail";
+      } else if (marks >= 40) {
+        grade = "D+";
+        gradePoint = 1.33;
+        remarks = "Fail";
+      } else if (marks >= 35) {
+        grade = "D";
+        gradePoint = 1.00;
+        remarks = "Fail";
       } else {
-        gpa = 1.0;
-        status = "Fail";
+        grade = "F";
+        gradePoint = 0.00;
+        remarks = "Fail";
       }
     });
   }
 
+  // CLEAR
   void clearData() {
     setState(() {
       marksController.clear();
-      gpa = 0.0;
-      status = "";
+      grade = "";
+      gradePoint = 0.0;
+      remarks = "";
     });
   }
 
+  // UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,18 +126,27 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            
-            const Text(
-              "Enter Student Marks",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+
+            // 🖼️ IMAGE
+            Image.asset(
+              'assets/images/logo_uum.png',
+              height: 120,
             ),
 
             const SizedBox(height: 20),
 
+            const Text(
+              "Enter Student Marks",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 20),
+
+            // INPUT
             TextField(
               controller: marksController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Enter marks (0 - 100)",
               ),
@@ -100,6 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             const SizedBox(height: 20),
 
+            // BUTTONS
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -119,13 +174,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
             const SizedBox(height: 30),
 
+            // OUTPUT
             Text(
-              "GPA: $gpa",
+              "Grade: $grade",
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
             Text(
-              "Status: $status",
+              "Grade Point: ${gradePoint.toStringAsFixed(2)}",
+              style: const TextStyle(fontSize: 20),
+            ),
+
+            Text(
+              "Remarks: $remarks",
               style: const TextStyle(fontSize: 20),
             ),
           ],
