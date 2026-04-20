@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +30,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // INPUT
   TextEditingController marksController = TextEditingController();
+
+  final player = AudioPlayer();
+
+  void playSound() {
+  player.play(AssetSource('audio/photoclick.mp3'));
+}
 
   // OUTPUT
   String grade = "";
@@ -159,7 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: calculateGPA,
+                  onPressed: () {
+                    calculateGPA();
+                    playSound();
+                  },
                   child: const Text("Calculate"),
                 ),
                 ElevatedButton(
