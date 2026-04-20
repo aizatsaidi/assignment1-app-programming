@@ -10,9 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'GPA Calculator'),
+      title: "UUM GPA Calculator",
+      home: const MyHomePage(title: 'GPA Calculator'),
     );
   }
 }
@@ -29,30 +30,39 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   // INPUT
-  TextEditingController marksController = TextEditingController();
+  TextEditingController sub1Controller = TextEditingController();
+  TextEditingController sub2Controller = TextEditingController();
 
   final player = AudioPlayer();
 
   void playSound() {
-  player.play(AssetSource('audio/photoclick.mp3'));
-}
+    player.play(AssetSource('audio/photoclick.mp3'));
+  }
 
   // OUTPUT
+  double average = 0.0;
   String grade = "";
   double gradePoint = 0.0;
   String remarks = "";
 
   @override
   void dispose() {
-    marksController.dispose();
+    sub1Controller.dispose();
+    sub2Controller.dispose();
     super.dispose();
   }
 
   // LOGIC
   void calculateGPA() {
-    double marks = double.tryParse(marksController.text) ?? 0;
+    double m1 = double.tryParse(sub1Controller.text) ?? 0;
+    double m2 = double.tryParse(sub2Controller.text) ?? 0;
+
+    double marks = (m1 + m2) / 2;
 
     setState(() {
+
+      average = marks;
+
       if (marks > 100 || marks < 0) {
         grade = "-";
         gradePoint = 0.0;
@@ -109,10 +119,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // CLEAR
   void clearData() {
     setState(() {
-      marksController.clear();
+      sub1Controller.clear();
+      sub2Controller.clear();
+      average = 0.0;
       grade = "";
       gradePoint = 0.0;
       remarks = "";
@@ -128,13 +139,14 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
 
-            // 🖼️ IMAGE
+            // IMAGE
             Image.asset(
               'assets/images/logo_uum.png',
               height: 120,
@@ -143,19 +155,31 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
 
             const Text(
-              "Enter Student Marks",
+              "GPA Calculator",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 20),
 
-            // INPUT
+            // INPUT 1
             TextField(
-              controller: marksController,
+              controller: sub1Controller,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: "Enter marks (0 - 100)",
+                hintText: "Subject 1 Marks",
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // INPUT 2
+            TextField(
+              controller: sub2Controller,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Subject 2 Marks",
               ),
             ),
 
@@ -186,18 +210,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
             // OUTPUT
             Text(
+              "Average: ${average.toStringAsFixed(2)}",
+              style: const TextStyle(fontSize: 20),
+            ),
+
+            Text(
               "Grade: $grade",
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
             Text(
               "Grade Point: ${gradePoint.toStringAsFixed(2)}",
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 18),
             ),
 
             Text(
               "Remarks: $remarks",
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),
